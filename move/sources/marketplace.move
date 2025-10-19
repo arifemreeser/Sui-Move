@@ -44,20 +44,20 @@ public struct HeroBought has copy, drop {
 // ========= FUNCTIONS =========
 
 fun init(ctx: &mut TxContext) {
-    // AdminCap oluştur
+
     let admin_cap = AdminCap {
         id: object::new(ctx),
     };
 
-    // AdminCap'i modül yayıncısına transfer et
+ 
     transfer::public_transfer(admin_cap, tx_context::sender(ctx));
 }
 
 public fun list_hero(nft: Hero, price: u64, ctx: &mut TxContext) {
-    // 1. ID oluştur
+ 
     let id = object::new(ctx);
 
-    // 2. ListHero objesi oluştur
+ 
     let list_hero = ListHero {
         id,
         nft,
@@ -65,7 +65,7 @@ public fun list_hero(nft: Hero, price: u64, ctx: &mut TxContext) {
         seller: tx_context::sender(ctx),
     };
 
-    // 3. Event emit et
+  
     event::emit(
         HeroListed {
             list_hero_id: object::id(&list_hero),
@@ -75,25 +75,24 @@ public fun list_hero(nft: Hero, price: u64, ctx: &mut TxContext) {
         }
     );
 
-    // 4. Objeyi trade edilebilir yap
+
     transfer::share_object(list_hero);
 }
 
 #[allow(lint(self_transfer))]
 public fun buy_hero(list_hero: ListHero, coin: Coin<SUI>, ctx: &mut TxContext) {
-    // 1. Destructure işlemi
+
     let ListHero { id, nft, price, seller } = list_hero;
 
-    // 2. Ödeme kontrolü
+  
     assert!(coin::value(&coin) == price, EInvalidPayment);
 
-    // 3. Coin'i satıcıya gönder
     transfer::public_transfer(coin, seller);
 
-    // 4. NFT'yi alıcıya gönder
+
     transfer::public_transfer(nft, tx_context::sender(ctx));
 
-    // 5. Event emit et
+
     event::emit(
         HeroBought {
             list_hero_id: object::uid_to_inner(&id),
@@ -104,8 +103,23 @@ public fun buy_hero(list_hero: ListHero, coin: Coin<SUI>, ctx: &mut TxContext) {
         }
     );
 
-    // 6. Listing ID'yi sil
+ 
     object::delete(id);
+}
+public fun delist(_: &AdminCap, list_hero: ListHero) {
+
+    let ListHero { id, nft, price: _, seller } = list_hero;
+
+    transfer::public_transfer(nft, seller);
+
+
+    object::delete(id);
+}
+
+public fun change_the_price(_: &AdminCap, list_hero: &mut ListHero, new_price: u64) {
+
+
+    list_hero.price = new_price;
 }
 
 // ========= GETTER FUNCTIONS =========

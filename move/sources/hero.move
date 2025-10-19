@@ -18,7 +18,7 @@ public struct HeroMetadata has key, store {
 // ========= FUNCTIONS =========
 
 #[allow(lint(self_transfer))]
-public entry fun create_hero(name: String, image_url: String, power: u64, ctx: &mut TxContext) {
+public fun create_hero(name: String, image_url: String, power: u64, ctx: &mut TxContext) {
     let id = object::new(ctx);
     let hero = Hero {
         id,
