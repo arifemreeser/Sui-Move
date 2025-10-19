@@ -7,7 +7,7 @@ export const listHero = (
 ) => {
   const tx = new Transaction();
 
-  const priceInMist = BigInt(priceInSui) * BigInt(1_000_000_000);
+  const priceInMist = BigInt(Math.floor(Number(priceInSui) * 1_000_000_000));
 
   tx.moveCall({
     target: `${packageId}::marketplace::list_hero`,

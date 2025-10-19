@@ -80,7 +80,7 @@ public fun list_hero(nft: Hero, price: u64, ctx: &mut TxContext) {
 }
 
 #[allow(lint(self_transfer))]
-public fun buy_hero(list_hero: ListHero, coin: Coin<SUI>, ctx: &mut TxContext) {
+public entry fun buy_hero(list_hero: ListHero, coin: Coin<SUI>, ctx: &mut TxContext) {
 
     let ListHero { id, nft, price, seller } = list_hero;
 
@@ -108,18 +108,15 @@ public fun buy_hero(list_hero: ListHero, coin: Coin<SUI>, ctx: &mut TxContext) {
 }
 public fun delist(_: &AdminCap, list_hero: ListHero) {
 
-    let ListHero { id, nft, price: _, seller } = list_hero;
+   let ListHero { id, nft, price: _, seller } = list_hero;
 
     transfer::public_transfer(nft, seller);
-
 
     object::delete(id);
 }
 
-public fun change_the_price(_: &AdminCap, list_hero: &mut ListHero, new_price: u64) {
-
-
-    list_hero.price = new_price;
+public fun change_the_price(_: &AdminCap, list_hero: &mut ListHero, new_price: u64)  {
+  list_hero.price = new_price;
 }
 
 // ========= GETTER FUNCTIONS =========
@@ -127,6 +124,7 @@ public fun change_the_price(_: &AdminCap, list_hero: &mut ListHero, new_price: u
 #[test_only]
 public fun listing_price(list_hero: &ListHero): u64 {
     list_hero.price
+
 }
 
 // ========= TEST ONLY FUNCTIONS =========
