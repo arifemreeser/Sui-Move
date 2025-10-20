@@ -26,6 +26,7 @@ public struct AdminCap has key, store {
 
 // ========= EVENTS =========
 
+
 public struct HeroListed has copy, drop {
     list_hero_id: ID,
     price: u64,
@@ -80,7 +81,7 @@ public fun list_hero(nft: Hero, price: u64, ctx: &mut TxContext) {
 }
 
 #[allow(lint(self_transfer))]
-public entry fun buy_hero(list_hero: ListHero, coin: Coin<SUI>, ctx: &mut TxContext) {
+public fun buy_hero(list_hero: ListHero, coin: Coin<SUI>, ctx: &mut TxContext) {
 
     let ListHero { id, nft, price, seller } = list_hero;
 
@@ -112,11 +113,14 @@ public fun delist(_: &AdminCap, list_hero: ListHero) {
 
     transfer::public_transfer(nft, seller);
 
+
+
     object::delete(id);
 }
 
 public fun change_the_price(_: &AdminCap, list_hero: &mut ListHero, new_price: u64)  {
   list_hero.price = new_price;
+   
 }
 
 // ========= GETTER FUNCTIONS =========
